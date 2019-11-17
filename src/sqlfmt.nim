@@ -1,6 +1,6 @@
-import parsesql, tables
+import parsesql, tables, strutils
+from sequtils import mapIt
 from strformat import `&`
-from strutils import toUpperAscii
 
 const
   reservedWords = {
@@ -26,6 +26,9 @@ proc parsing(node: SqlNode, ret: var string) =
     ret.add(reservedWords["upper"][node.kind])
     for node in node.sons:
       parsing(node, ret)
+  of nkSelectColumns:
+    let s = node.sons.mapIt($it).join(", ")
+    ret.add(&" {s}")
   of nkFrom:
     ret.add("\n  " & reservedWords["upper"][node.kind])
     for node in node.sons:
