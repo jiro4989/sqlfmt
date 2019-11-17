@@ -40,8 +40,15 @@ proc parsing(node: SqlNode, ret: var string) =
   of nkInfix:
     let s = node.sons
     echo "Infix: " & $s
-    let p = s[0].`$`.toUpperAscii
-    ret.add(&" {s[1]} {p} {s[2]}")
+    echo "Infix.kind: " & $s[0].kind
+    let infix = $s[0]
+    case infix
+    of "=":
+      ret.add(&" {s[1]} {infix} {s[2]}")
+    else:
+      var p = infix.toUpperAscii
+      p = p.align(6)
+      ret.add(&" {s[1]}\n{p} {s[2]}")
   else:
     echo "Sons: ", node.sons
     for node in node.sons:
